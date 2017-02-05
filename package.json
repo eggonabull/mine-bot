@@ -1,0 +1,32 @@
+{
+  "name": "mine-bot",
+  "version": "1.0.0",
+  "description": "A terrible minecraft bot.",
+  "main": "bot.js",
+  "dependencies": {
+    "minecraft-protocol": "^1.1.1",
+    "mineflayer": "^2.0.0",
+    "mineflayer-navigate": "0.0.9",
+    "mineflayer-scaffold": "0.0.5",
+    "vec3": "^0.1.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eggonabull/mine-bot.git"
+  },
+  "keywords": [
+    "minecraft",
+    "mineflayer",
+    "bot"
+  ],
+  "author": "eggonabull",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/eggonabull/mine-bot/issues"
+  },
+  "homepage": "https://github.com/eggonabull/mine-bot#readme"
+}
