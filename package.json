@@ -6,14 +6,14 @@
   "dependencies": {
     "minecraft-protocol": "^1.1.1",
     "mineflayer": "^2.0.0",
-    "mineflayer-navigate": "0.0.9",
-    "mineflayer-scaffold": "0.0.5",
-    "requireindex": "^1.1.0",
-    "vec3": "^0.1.3"
+    "mineflayer-navigate": "file:../mineflayer-navigate",
+    "mineflayer-scaffold": "file:../mineflayer-scaffold",
+    "requireindex": "^1.1.0"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prestart": "npm remove mineflayer-scaffold && npm install ../mineflayer-scaffold",
+    "start": "node bot.js"
   },
   "repository": {
     "type": "git",
