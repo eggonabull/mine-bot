@@ -1,6 +1,7 @@
 import pathfinder_pkg from "mineflayer-pathfinder";
 import { sleep } from "./shared.js";
 import { getDistances, has_thorns, equip_by_name } from "./shared.js";
+import { mVoidDump } from "./inventory.js";
 import g from "./globals.js";
 
 const { GoalNear } = pathfinder_pkg.goals;
@@ -15,8 +16,8 @@ export async function farmMobs() {
     console.log("mwalkPoints", loop);
     // loop = loop && (await mDepositItems());
     // console.log("mDepositItems", loop);
-    // loop = loop && (await mVoidDump());
-    // console.log("mVoidDump", loop);
+    loop = loop && (await mVoidDump());
+    console.log("mVoidDump", loop);
   }
 }
 
@@ -88,12 +89,17 @@ async function fightPoints() {
           continue;
         }
         // console.log("Attacking", entity)
+        equip_by_name("iron_sword");
         equip_by_name("wooden_sword");
         bot.attack(entity);
         saw_mobs = true;
         break;
       }
-      await sleep(1100);
+      if (["iron_sword", "wooden_sword"].indexOf(bot.heldItem.name) === -1) {
+        await sleep(300);
+      } else {
+        await sleep(1100);
+      }
     }
   }
   return true;

@@ -117,11 +117,11 @@ async function mVoidDump() {
           item.name === "arrow" ||
           item.name === "bone" ||
           item.name === "rotten_flesh" ||
-          item.name.indexOf("leather") != -1
+          item.name.indexOf("leather") != -1 ||
+          item.name.indexOf("golden") != -1
         ) {
           await void_throw(fence_vec, item);
         } else if (
-          item.name.indexOf("golden") != -1 ||
           item.name.indexOf("chainmail") != -1 ||
           item.name == "bow"
         ) {
@@ -136,8 +136,8 @@ async function mVoidDump() {
             !item.nbt?.value?.Enchantments?.value?.value?.length,
           );
           if (
-            item.nbt?.value?.Damage.value > 40 &&
-            (item.nbt?.value?.Enchantments?.value?.value?.length || 0) < 3
+            item.nbt?.value?.Damage.value > 40 ||
+            (item.nbt?.value?.Enchantments?.value?.value?.length || 0) < 2
           ) {
             await void_throw(fence_vec, item);
           }
