@@ -95,7 +95,7 @@ async function fightPoints() {
         saw_mobs = true;
         break;
       }
-      if (["iron_sword", "wooden_sword"].indexOf(bot.heldItem.name) === -1) {
+      if (["iron_sword", "wooden_sword"].indexOf(bot.heldItem && bot.heldItem.name) === -1) {
         await sleep(300);
       } else {
         await sleep(1100);
