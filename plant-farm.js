@@ -5,7 +5,8 @@ import g from "./globals.js";
 
 const { GoalNear } = pathfinder_pkg.goals;
 
-async function craftBonemeal(bot) {
+async function craftBonemeal() {
+  const bot = g.bot;
   const bonemeal_id = bot.registry.itemsByName.bone_meal.id;
   const bone_id = bot.registry.itemsByName.bone.id;
   const bone_meal_inv = bot.inventory.findInventoryItem(bonemeal_id);
@@ -24,8 +25,9 @@ async function craftBonemeal(bot) {
   return true;
 }
 
-async function fertilizeCrop(bot, block_vec) {
+async function fertilizeCrop(block_vec) {
   // await sleep(20)
+  const bot = g.bot;
   const bonemeal_id = bot.registry.itemsByName.bone_meal.id;
   const bone_meal_inv = bot.inventory.findInventoryItem(bonemeal_id);
   if (!bone_meal_inv) {
@@ -53,7 +55,8 @@ async function fertilizeCrop(bot, block_vec) {
   return true;
 }
 
-async function breakFarmBlock(bot, block_vec, crop_name, item_name) {
+async function breakFarmBlock(block_vec, crop_name, item_name) {
+  const bot = g.bot;
   const block = bot.blockAt(block_vec);
   if (block._properties.age == 7) {
     await bot.dig(block);
@@ -67,7 +70,8 @@ async function breakFarmBlock(bot, block_vec, crop_name, item_name) {
   return true;
 }
 
-async function placeFarmBlock(bot, block_vec, crop_name, item_name) {
+async function placeFarmBlock(block_vec, crop_name, item_name) {
+  const bot = g.bot;
   await sleep(100);
   const item_id = bot.registry.itemsByName[item_name].id;
   const item_inv = bot.inventory.findInventoryItem(item_id);
@@ -102,7 +106,8 @@ async function placeFarmBlock(bot, block_vec, crop_name, item_name) {
   return true;
 }
 
-export async function farmCrops(bot, crop_name) {
+export async function farmCrops(crop_name) {
+  const bot = g.bot;
   bot.chat("gonna farm");
   const item_name = {
     carrots: "carrot",
