@@ -4,9 +4,9 @@ import { Vec3 } from "vec3";
 import g from "./globals.js";
 
 const { GoalNear } = pathfinder_pkg.goals;
-const bot = g.bot;
 
 async function mDepositItems() {
+  const bot = g.bot;
   if (!("dumpinv" in g.named_points)) {
     bot.chat("You haven't told me which chests to use (bot point dumpinv)");
     return;
@@ -88,6 +88,7 @@ async function mDepositItems() {
 }
 
 async function mVoidDump() {
+  const bot = g.bot;
   if (!("farmvoid" in g.named_points)) {
     bot.chat("I don't know where to dump items ([bot] point farmvoid)");
     return;
@@ -115,7 +116,7 @@ async function mVoidDump() {
         if (
           item.name === "gunpowder" ||
           item.name === "arrow" ||
-          item.name === "bone" ||
+          // item.name === "bone" ||
           item.name === "rotten_flesh" ||
           item.name.indexOf("leather") != -1 ||
           item.name.indexOf("golden") != -1
@@ -152,6 +153,7 @@ async function mVoidDump() {
 }
 
 async function void_throw(fence_vec, item) {
+  const bot = g.bot;
   await bot.lookAt(
     new Vec3(fence_vec.x, fence_vec.y - 1, fence_vec.z + 1),
     true,
