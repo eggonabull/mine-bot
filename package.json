@@ -1,19 +1,13 @@
 {
-  "name": "mine-bot",
+  "name": "minebot",
   "version": "1.0.0",
   "description": "A terrible minecraft bot.",
-  "main": "bot.js",
-  "dependencies": {
-    "minecraft-protocol": "^1.1.1",
-    "mineflayer": "^2.0.0",
-    "mineflayer-navigate": "file:../mineflayer-navigate",
-    "mineflayer-scaffold": "file:../mineflayer-scaffold",
-    "requireindex": "^1.1.0"
-  },
-  "devDependencies": {},
+  "type": "module",
+  "main": "index.js",
   "scripts": {
-    "prestart": "npm remove mineflayer-scaffold && npm install ../mineflayer-scaffold",
-    "start": "node bot.js"
+    "start": "node index.js",
+    "format": "prettier --write .",
+    "lint": "eslint . --ext .js,jsx"
   },
   "repository": {
     "type": "git",
@@ -26,6 +20,16 @@
   ],
   "author": "eggonabull",
   "license": "MIT",
+  "dependencies": {
+    "mineflayer": "^4.10.1",
+    "mineflayer-auto-eat": "^3.3.6",
+    "mineflayer-pathfinder": "^2.4.4"
+  },
+  "devDependencies": {
+    "eslint": "^8.47.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "prettier": "^3.0.2"
+  },
   "bugs": {
     "url": "https://github.com/eggonabull/mine-bot/issues"
   },
