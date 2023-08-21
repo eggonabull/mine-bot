@@ -14,19 +14,16 @@ async function craftBonemeal() {
   const bone_meal_inv = bot.inventory.findInventoryItem(bonemeal_id);
   if (!bone_meal_inv || bone_meal_inv.count < 10) {
     await bot.waitForTicks(2);
-    const bone_inv = bot.inventory.findInventoryItem(bone_id);
+    let bone_inv = bot.inventory.findInventoryItem(bone_id);
     if (!bone_inv) {
       console.log("items", bot.inventory.items());
       bot.chat("I'm out of bone");
       return false;
     }
     const recipe = bot.recipesFor(bonemeal_id)[0];
-    await bot.craft(recipe);
-    await bot.waitForTicks(3);
-    await bot.craft(recipe);
-    await bot.waitForTicks(3);
-    await bot.craft(recipe);
-    await bot.waitForTicks(3);
+    for (let i = 0; i < 5 && (bone_inv && bone_inv.count > 0); i++, bone_inv = bot.inventory.findInventoryItem(bone_id)) {
+      await bot.craft(recipe);
+    }
     return true;
   }
   return true;
