@@ -120,10 +120,11 @@ async function placeFarmBlock(block_vec, crop_name, item_name) {
 
   await bot.waitForTicks(1);
   await bot.lookAt(block_vec);
-  await bot.equip(item_inv, "hand");
   try {
     await bot.waitForTicks(10);
     while (bot.blockAt(block_vec).name != crop_name) {
+      await bot.equip(item_inv, "hand");
+      await bot.waitForTicks(1);
       await bot.activateBlock(bot.blockAt(block_vec), new Vec3(0, 1, 0));
       await bot.waitForTicks(5);
     }
