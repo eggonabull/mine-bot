@@ -5,9 +5,8 @@ import g from "./globals.js";
 
 const { GoalNear } = pathfinder_pkg.goals;
 
-const bot = g.bot;
-
 async function goToBed(direct) {
+  const bot = g.bot;
   console.log(
     "goToBed",
     direct,
@@ -37,8 +36,7 @@ async function goToBed(direct) {
   for (let bed_index = 0; bed_index < beds.length; bed_index++) {
     const bed_vec = beds[bed_index];
     const bed_goal = new GoalNear(bed_vec.x, bed_vec.y, bed_vec.z, 1);
-    const path = bot.pathfinder.getPathTo(g.settings.defaultMove, bed_goal);
-    //console.log("path", path)
+    const path = bot.pathfinder.getPathTo(g.defaultMove, bed_goal);
     if (!path) {
       continue;
     }
