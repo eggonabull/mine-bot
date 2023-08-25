@@ -1,6 +1,6 @@
-import mineflayer from "mineflayer";
-import pathfinder_pkg from "mineflayer-pathfinder";
-import autoeat from "mineflayer-auto-eat";
+import * as mineflayer from "mineflayer";
+import * as pathfinder_pkg from "mineflayer-pathfinder";
+import * as autoeat from "mineflayer-auto-eat";
 import { Vec3 } from "vec3";
 import { getDistances, itemToString, drop, pickUpItems } from "./shared.js";
 import { farmMobs } from "./mob-farm.js";
@@ -8,12 +8,11 @@ import { farmCrops } from "./plant-farm.js";
 import { goToBed } from "./bed.js";
 import { doTreeMining, placeSaplings } from "./tree-farm.js";
 import { mVoidDump, mDepositItems } from "./inventory.js";
-import g from "./globals.js";
+import * as g from "./globals.js";
 
 const { pathfinder, Movements } = pathfinder_pkg;
 const { GoalNear, GoalFollow } = pathfinder_pkg.goals;
 let settings = g.settings;
-let defaultMove = null;
 
 // Initialize bot
 const bot = mineflayer.createBot({
@@ -21,7 +20,7 @@ const bot = mineflayer.createBot({
   username: settings.username, // minecraft username
   auth: settings.auth, // for offline mode servers, you can set this to 'offline'
 });
-g.bot = bot;
+g.setBot(bot);
 
 // Load plugins
 bot.loadPlugin(pathfinder);
@@ -29,8 +28,8 @@ bot.loadPlugin(autoeat.plugin);
 
 // Bind event handlers
 bot.once("spawn", () => {
-  g.defaultMove = new Movements(bot);
-  defaultMove = g.defaultMove;
+  const defaultMove = new Movements(bot);
+  g.setDefaultMove(defaultMove);
   defaultMove.blocksCantBreak.add(538); // oak_slab
   defaultMove.blocksCantBreak.add(253); // fence
   defaultMove.blocksCantBreak.add(13); // oak_block
@@ -51,6 +50,11 @@ bot.once("spawn", () => {
     priority: "foodPoints",
     startAt: 18,
     bannedFood: [],
+    checkOnItemPickup: true,
+    eatingTimeout: 2,
+    equipOldItem: true,
+    ignoreInventoryCheck: false,
+    offhand: false,
   };
 
   bot.on("chat", function (username, message) {
@@ -66,6 +70,7 @@ bot.once("spawn", () => {
   // });
 
   bot.on("health", () => {
+    console.log("I lost health");
     if (g.prevHealth) {
       if (bot.health < g.prevHealth) {
         bot.chat(`I'm taking damage!  ${bot.health}`);
@@ -73,19 +78,19 @@ bot.once("spawn", () => {
           bot.chat(
             `I've probably fallen ${bot.entity.position.x}, ${bot.entity.position.y}, ${bot.entity.position.z}. My health is ${bot.health}. My hunger is ${bot.food}/${bot.foodSaturation}`,
           );
-          g.mode = null;
+          g.setMode(null);
           bot.quit();
           bot.pathfinder.stop();
         }
         if (bot.health < 14) {
           bot.chat("I'm scared, bye");
-          g.mode = null;
+          g.setMode(null);
           bot.quit();
           bot.pathfinder.stop();
         }
       }
     }
-    g.prevHealth = bot.health;
+    g.setPrevHealth(bot.health);
     if (bot.food === 20) {
       // Disable the plugin if the bot is at 20 food points
       bot.autoEat.disable();
@@ -95,7 +100,7 @@ bot.once("spawn", () => {
   });
 });
 
-function chat_handler(username, message) {
+function chat_handler(username: string, message: string) {
   if (username === bot.username) return;
   const target = bot.players[username] ? bot.players[username].entity : null;
   const short_name =
@@ -125,9 +130,13 @@ function chat_handler(username, message) {
     bot.pathfinder.setGoal(new GoalNear(p.x, p.y, p.z, 1));
   } else if (command === "hide" || command === "quit") {
     bot.chat("See you later!");
-    g.mode = null;
+    g.setMode(null);
     bot.quit();
   } else if (command === "distance") {
+    if (!target) {
+      bot.chat("I don't see you!");
+      return;
+    }
     const dist = getDistances(target.position);
     bot.chat(
       `Our y-distance is ${dist.ydiff} and our horizontal distance is ${
@@ -135,6 +144,10 @@ function chat_handler(username, message) {
       }`,
     );
   } else if (command === "blockinfo") {
+    if (!target) {
+      bot.chat("I don't see you!");
+      return;
+    }
     const p = target.position;
     const foot_block = bot.blockAt(p);
     const floor_block = bot.blockAt(new Vec3(p.x, p.y - 1, p.z));
@@ -182,19 +195,23 @@ function chat_handler(username, message) {
       bot.chat(`My current task is ${g.mode}`);
     }
   } else if (command === "tree") {
-    g.mode = "tree";
+    g.setMode("tree");
     doTreeMining();
   } else if (command === "plant") {
     placeSaplings();
   } else if (command === "follow") {
+    if (!target) {
+      bot.chat("I don't see you !");
+      return;
+    }
     bot.pathfinder.setGoal(new GoalFollow(target, 3), true);
   } else if (command === "tidy") {
     pickUpItems();
   } else if (command === "stop") {
-    g.mode = null;
+    g.setMode(null);
     //bot.pathfinder.stop()
   } else if (command === "drop") {
-    drop(args.length && args[0]);
+    drop(args.length && args[0] || undefined);
   } else if (command === "fight") {
     bot.chat("Who do I look like? Fuckin' Rambo?");
   } else if (command === "farm-mobs") {

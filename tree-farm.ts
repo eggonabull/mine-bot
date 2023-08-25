@@ -2,12 +2,12 @@ import pathfinder_pkg from "mineflayer-pathfinder";
 import { sleep, pickUpItems, equip_by_id } from "./shared.js";
 import { goToBed } from "./bed.js";
 import { Vec3 } from "vec3";
-import g from "./globals.js";
+import * as g from "./globals.js";
 
 const { GoalNear } = pathfinder_pkg.goals;
 
 async function doTreeMining() {
-  const bot = g.bot;
+  const bot = g.getBot();
   while (g.mode === "tree") {
     console.log("sleep");
     g.mode === "tree" && (await sleep());
@@ -26,7 +26,7 @@ async function doTreeMining() {
 
 async function mineTree() {
   // Initial search for logs
-  const bot = g.bot;
+  const bot = g.getBot();
   const iron_axe_id = bot.registry.itemsByName.iron_axe.id;
   const ids = [bot.registry.blocksByName["oak_log"].id];
   const blocks = bot.findBlocks({
@@ -87,7 +87,7 @@ async function mineTree() {
 }
 
 export async function placeSaplings() {
-  const bot = g.bot;
+  const bot = g.getBot();
   const oak_sapling_id = bot.registry.itemsByName.oak_sapling.id;
   const ids = [bot.registry.blocksByName["dirt"].id];
   const dirts = bot.findBlocks({
@@ -96,7 +96,7 @@ export async function placeSaplings() {
     count: 50,
   });
   for (let i = 0; i < dirts.length; i++) {
-    const item = bot.inventory.findInventoryItem(oak_sapling_id);
+    const item = bot.inventory.findInventoryItem(oak_sapling_id, null, false);
     if (!item) {
       bot.chat("I don't have any oak saplings");
       return;
@@ -124,7 +124,7 @@ export async function placeSaplings() {
     await bot.pathfinder.goto(
       new GoalNear(above_dirt_vec.x, above_dirt_vec.y, above_dirt_vec.z, 2),
     );
-    await bot.equip(item);
+    await bot.equip(item, "hand");
     await bot.lookAt(dirt_vec, true);
     await bot.placeBlock(bot.blockAt(dirt_vec), new Vec3(0, 1, 0));
     await sleep(350);

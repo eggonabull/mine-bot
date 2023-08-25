@@ -1,15 +1,16 @@
-import pathfinder_pkg from "mineflayer-pathfinder";
+import * as pathfinder_pkg from "mineflayer-pathfinder";
 import { sleep } from "./shared.js";
 import { getDistances, has_thorns, equip_by_name } from "./shared.js";
 import { mVoidDump } from "./inventory.js";
-import g from "./globals.js";
+import * as g from "./globals.js";
 
 const { GoalNear } = pathfinder_pkg.goals;
 
 export async function farmMobs() {
-  let loop = true;
-  g.mode = "farmMobs";
+  let loop: boolean | undefined = true;
+  g.setMode("farmMobs");
   while (loop && g.mode === "farmMobs") {
+    loop = loop && g.mode === "farmMobs" && (await createSwords());
     loop = loop && g.mode === "farmMobs" && (await fightPoints());
     console.log("fightPoints", loop);
     loop = loop && g.mode === "farmMobs" && (await mwalkPoints());
@@ -21,8 +22,24 @@ export async function farmMobs() {
   }
 }
 
+async function createSwords() {
+  const bot = g.getBot();
+  const sword_name = "wooden_sword";
+  if (bot.inventory.count(sword_name, null) > 5) {
+    return true;
+  }
+  const sword_type = bot.registry.itemsByName[sword_name].type;
+  const sword_recipes = bot.recipesFor(sword_type, null, 1, bot);
+  if (sword_recipes.length == 0) {
+    bot.chat("I don't know how to craft " + sword_name);
+    return false;
+  }
+  await bot.craft(sword_recipes[0], 1, null);
+  bot.chat("Crafted " + sword_name);
+}
+
 async function mwalkPoints() {
-  const bot = g.bot;
+  const bot = g.getBot();
   const mwalk_points = Object.keys(g.named_points).filter((k) =>
     k.startsWith("walkfarm"),
   );
@@ -45,7 +62,7 @@ async function mwalkPoints() {
 }
 
 async function fightPoints() {
-  const bot = g.bot;
+  const bot = g.getBot();
   const farm_points = Object.keys(g.named_points).filter((k) =>
     k.startsWith("mobfarm"),
   );
@@ -86,7 +103,7 @@ async function fightPoints() {
         if (!entity) {
           continue;
         }
-        if (entity.type !== "hostile") {
+        if (entity.type !== "mob") {
           continue;
         }
         if (has_thorns(entity)) {
@@ -104,9 +121,8 @@ async function fightPoints() {
         break;
       }
       if (
-        ["iron_sword", "wooden_sword"].indexOf(
-          bot.heldItem && bot.heldItem.name,
-        ) === -1
+        bot.heldItem &&
+        ["iron_sword", "wooden_sword"].indexOf(bot.heldItem.name) === -1
       ) {
         await sleep(300);
       } else {

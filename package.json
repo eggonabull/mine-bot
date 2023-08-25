@@ -5,7 +5,8 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "build": "tsc --outDir dist",
+    "start": "npm run build && node dist/index.js",
     "format": "prettier --write .",
     "lint": "eslint . --ext .js,jsx"
   },
@@ -28,7 +29,8 @@
   "devDependencies": {
     "eslint": "^8.47.0",
     "eslint-plugin-prettier": "^5.0.0",
-    "prettier": "^3.0.2"
+    "prettier": "^3.0.2",
+    "typescript": "^5.2.2"
   },
   "bugs": {
     "url": "https://github.com/eggonabull/mine-bot/issues"

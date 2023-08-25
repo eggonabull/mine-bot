@@ -1,12 +1,13 @@
-import pathfinder_pkg from "mineflayer-pathfinder";
+import * as pathfinder_pkg from "mineflayer-pathfinder";
 import { sleep } from "./shared.js";
 import { Vec3 } from "vec3";
-import g from "./globals.js";
+import * as prismarine_item from "prismarine-item";
+import * as g from "./globals.js";
 
 const { GoalNear } = pathfinder_pkg.goals;
 
 async function mDepositItems() {
-  const bot = g.bot;
+  const bot = g.getBot();
   if (!("dumpinv" in g.named_points)) {
     bot.chat("You haven't told me which chests to use (bot point dumpinv)");
     return;
@@ -37,7 +38,7 @@ async function mDepositItems() {
     await bot.waitForTicks(2);
     const chest_items = inventory.containerItems();
     const user_items = bot.inventory.items();
-    const overlap_items = [];
+    const overlap_items: [number, number][] = [];
     // console.log("chest_items", chest_items.length, chest_items)
     // console.log("user_items", user_items.length, user_items)
     for (
@@ -54,7 +55,7 @@ async function mDepositItems() {
         const user_item = user_items[user_item_idx];
         if (!user_item) continue;
         if (user_item.type == chest_item.type) {
-          overlap_items.push(user_item.type);
+          overlap_items.push([user_item.type, user_item.count]);
         }
       }
     }
@@ -67,7 +68,7 @@ async function mDepositItems() {
       }
       deposited.push(deposit_item);
       await Promise.race([
-        inventory.deposit(deposit_item),
+        inventory.deposit(deposit_item[0], null, deposit_item[1]),
         bot.waitForTicks(10),
       ]).catch((error) => {
         if (error.message === "destination full") {
@@ -88,7 +89,7 @@ async function mDepositItems() {
 }
 
 async function mVoidDump() {
-  const bot = g.bot;
+  const bot = g.getBot();
   if (!("farmvoid" in g.named_points)) {
     bot.chat("I don't know where to dump items ([bot] point farmvoid)");
     return;
@@ -125,16 +126,22 @@ async function mVoidDump() {
         } else if (item.name.indexOf("chainmail") != -1 || item.name == "bow") {
           console.log(
             "damage",
+            // @ts-ignore
             item.nbt?.value?.Damage.value,
+            // @ts-ignore
             item.nbt?.value?.Damage.value > 10,
           );
           console.log(
             "enchantments",
+            // @ts-ignore
             item.nbt?.value?.Enchantments?.value?.value,
+            // @ts-ignore
             !item.nbt?.value?.Enchantments?.value?.value?.length,
           );
           if (
+            // @ts-ignore
             item.nbt?.value?.Damage.value > 40 ||
+            // @ts-ignore
             (item.nbt?.value?.Enchantments?.value?.value?.length || 0) < 2
           ) {
             await void_throw(fence_vec, item);
@@ -149,8 +156,8 @@ async function mVoidDump() {
   return false;
 }
 
-async function void_throw(fence_vec, item) {
-  const bot = g.bot;
+async function void_throw(fence_vec: Vec3, item: prismarine_item.Item) {
+  const bot = g.getBot()
   await bot.lookAt(
     new Vec3(fence_vec.x, fence_vec.y - 1, fence_vec.z + 1),
     true,
