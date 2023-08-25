@@ -1,8 +1,8 @@
-import pathfinder_pkg from "mineflayer-pathfinder";
+import * as pathfinder_pkg from "mineflayer-pathfinder";
 import * as prismarine_entity from "prismarine-entity";
 import { Vec3 } from "vec3";
 import * as primarine_item from "prismarine-item";
-import * as g from "./globals.js";
+import * as g from "./globals";
 
 const { GoalNear } = pathfinder_pkg.goals;
 

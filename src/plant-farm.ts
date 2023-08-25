@@ -1,8 +1,8 @@
-import pathfinder_pkg from "mineflayer-pathfinder";
+import * as pathfinder_pkg from "mineflayer-pathfinder";
 import { Vec3 } from "vec3";
-import { pickUpItems } from "./shared.js";
-import * as g from "./globals.js";
-import { getDistances } from "./shared.js";
+import { pickUpItems } from "./shared";
+import * as g from "./globals";
+import { getDistances } from "./shared";
 
 const { GoalNear } = pathfinder_pkg.goals;
 

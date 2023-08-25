@@ -2,13 +2,13 @@ import * as mineflayer from "mineflayer";
 import * as pathfinder_pkg from "mineflayer-pathfinder";
 import * as autoeat from "mineflayer-auto-eat";
 import { Vec3 } from "vec3";
-import { getDistances, itemToString, drop, pickUpItems } from "./shared.js";
-import { farmMobs } from "./mob-farm.js";
-import { farmCrops } from "./plant-farm.js";
-import { goToBed } from "./bed.js";
-import { doTreeMining, placeSaplings } from "./tree-farm.js";
-import { mVoidDump, mDepositItems } from "./inventory.js";
-import * as g from "./globals.js";
+import { getDistances, itemToString, drop, pickUpItems } from "./shared";
+import { farmMobs, createSwords } from "./mob-farm";
+import { farmCrops } from "./plant-farm";
+import { goToBed } from "./bed";
+import { doTreeMining, placeSaplings } from "./tree-farm";
+import { mVoidDump, mDepositItems } from "./inventory";
+import * as g from "./globals";
 
 const { pathfinder, Movements } = pathfinder_pkg;
 const { GoalNear, GoalFollow } = pathfinder_pkg.goals;
@@ -224,6 +224,8 @@ function chat_handler(username: string, message: string) {
       return;
     }
     farmCrops(args[0]);
+  } else if (command === "swords") {
+    createSwords()
   } else if (command === "sleep") {
     goToBed(true);
   } else if (g.named_points[command]) {

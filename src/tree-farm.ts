@@ -1,8 +1,8 @@
-import pathfinder_pkg from "mineflayer-pathfinder";
-import { sleep, pickUpItems, equip_by_id } from "./shared.js";
-import { goToBed } from "./bed.js";
+import * as pathfinder_pkg from "mineflayer-pathfinder";
+import { sleep, pickUpItems, equip_by_id } from "./shared";
+import { goToBed } from "./bed";
 import { Vec3 } from "vec3";
-import * as g from "./globals.js";
+import * as g from "./globals";
 
 const { GoalNear } = pathfinder_pkg.goals;
 

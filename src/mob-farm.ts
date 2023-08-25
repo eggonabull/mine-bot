@@ -1,6 +1,6 @@
 import * as pathfinder_pkg from "mineflayer-pathfinder";
-import { sleep } from "./shared.js";
-import { getDistances, has_thorns, equip_by_name } from "./shared.js";
+import { sleep } from "./shared";
+import { getDistances, has_thorns, equip_by_name } from "./shared";
 import { mVoidDump } from "./inventory.js";
 import * as g from "./globals.js";
 
@@ -22,19 +22,25 @@ export async function farmMobs() {
   }
 }
 
-async function createSwords() {
+export async function createSwords() {
   const bot = g.getBot();
   const sword_name = "wooden_sword";
+  const craftingTableID = bot.registry.blocksByName.crafting_table.id
   if (bot.inventory.count(sword_name, null) > 5) {
     return true;
   }
+  const craftingTable = bot.findBlock({
+    matching: craftingTableID,
+    maxDistance: 40,
+  })
+  await bot.pathfinder.goto(new GoalNear(craftingTable.position.x, craftingTable.position.y, craftingTable.position.z, 4));
   const sword_type = bot.registry.itemsByName[sword_name].type;
   const sword_recipes = bot.recipesFor(sword_type, null, 1, bot);
   if (sword_recipes.length == 0) {
     bot.chat("I don't know how to craft " + sword_name);
     return false;
   }
-  await bot.craft(sword_recipes[0], 1, null);
+  await bot.craft(sword_recipes[0], 1, craftingTable);
   bot.chat("Crafted " + sword_name);
 }
 

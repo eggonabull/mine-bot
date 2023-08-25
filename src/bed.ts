@@ -1,7 +1,7 @@
 //
 import * as pathfinder_pkg from "mineflayer-pathfinder";
-import { sleep } from "./shared.js";
-import * as g from "./globals.js";
+import { sleep } from "./shared";
+import * as g from "./globals";
 
 const { GoalNear } = pathfinder_pkg.goals;
 

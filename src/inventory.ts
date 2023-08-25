@@ -1,8 +1,8 @@
 import * as pathfinder_pkg from "mineflayer-pathfinder";
-import { sleep } from "./shared.js";
+import { sleep } from "./shared"
 import { Vec3 } from "vec3";
 import * as prismarine_item from "prismarine-item";
-import * as g from "./globals.js";
+import * as g from "./globals";
 
 const { GoalNear } = pathfinder_pkg.goals;
 
