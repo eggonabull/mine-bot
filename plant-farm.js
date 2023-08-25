@@ -21,7 +21,11 @@ async function craftBonemeal() {
       return false;
     }
     const recipe = bot.recipesFor(bonemeal_id)[0];
-    for (let i = 0; i < 5 && (bone_inv && bone_inv.count > 0); i++, bone_inv = bot.inventory.findInventoryItem(bone_id)) {
+    for (
+      let i = 0;
+      i < 5 && bone_inv && bone_inv.count > 0;
+      i++, bone_inv = bot.inventory.findInventoryItem(bone_id)
+    ) {
       await bot.craft(recipe);
     }
     return true;
@@ -73,7 +77,7 @@ async function breakFarmBlock(block_vec, crop_name, item_name) {
     await bot.waitForTicks(1);
     breakFarmBlockCount++;
     if (breakFarmBlockCount % 10 == 0) {
-      console.log("start pickup")
+      console.log("start pickup");
       await pickUpItems();
       if (getDistances(block_vec).posdiff > 4) {
         await bot.pathfinder.goto(
@@ -109,7 +113,9 @@ async function placeFarmBlock(block_vec, crop_name, item_name) {
   }
   if (!item_inv) {
     await pickUpItems();
-    await bot.pathfinder.goto(new GoalNear(block_vec.x, block_vec.y, block_vec.z, 2));
+    await bot.pathfinder.goto(
+      new GoalNear(block_vec.x, block_vec.y, block_vec.z, 2),
+    );
     item_inv = bot.inventory.findInventoryItem(item_id);
     if (!item_inv) {
       bot.chat(`I'm all out of ${item_name}`);
@@ -161,10 +167,16 @@ export async function farmCrops(crop_name) {
   let loop = true;
   g.mode = "farmCrops";
   while (loop && g.mode === "farmCrops") {
-    console.log("loop start")
-    loop = loop && (await craftBonemeal());
-    loop = loop && (await fertilizeCrop(block_vec));
-    loop = loop && (await breakFarmBlock(block_vec, crop_name, item_name));
-    loop = loop && (await placeFarmBlock(block_vec, crop_name, item_name));
+    console.log("loop start");
+    loop = loop && g.mode === "farmCrops" && (await craftBonemeal());
+    loop = loop && g.mode === "farmCrops" && (await fertilizeCrop(block_vec));
+    loop =
+      loop &&
+      g.mode === "farmCrops" &&
+      (await breakFarmBlock(block_vec, crop_name, item_name));
+    loop =
+      loop &&
+      g.mode === "farmCrops" &&
+      (await placeFarmBlock(block_vec, crop_name, item_name));
   }
 }

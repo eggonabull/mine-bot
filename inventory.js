@@ -122,10 +122,7 @@ async function mVoidDump() {
           item.name.indexOf("golden") != -1
         ) {
           await void_throw(fence_vec, item);
-        } else if (
-          item.name.indexOf("chainmail") != -1 ||
-          item.name == "bow"
-        ) {
+        } else if (item.name.indexOf("chainmail") != -1 || item.name == "bow") {
           console.log(
             "damage",
             item.nbt?.value?.Damage.value,

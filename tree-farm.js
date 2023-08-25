@@ -10,15 +10,15 @@ async function doTreeMining() {
   const bot = g.bot;
   while (g.mode === "tree") {
     console.log("sleep");
-    await sleep();
+    g.mode === "tree" && (await sleep());
     console.log("mineTree");
-    await mineTree();
+    g.mode === "tree" && (await mineTree());
     console.log("placeSaplings");
-    await placeSaplings();
+    g.mode === "tree" && (await placeSaplings());
     console.log("pickUpItems");
-    await pickUpItems();
+    g.mode === "tree" && (await pickUpItems());
     console.log("quitNight");
-    await goToBed();
+    g.mode === "tree" && (await goToBed());
     // manageInventoryTree()
   }
   bot.chat("I'm sick of chopping wood");

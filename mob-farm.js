@@ -10,13 +10,13 @@ export async function farmMobs() {
   let loop = true;
   g.mode = "farmMobs";
   while (loop && g.mode === "farmMobs") {
-    loop = loop && (await fightPoints());
+    loop = loop && g.mode === "farmMobs" && (await fightPoints());
     console.log("fightPoints", loop);
-    loop = loop && (await mwalkPoints());
+    loop = loop && g.mode === "farmMobs" && (await mwalkPoints());
     console.log("mwalkPoints", loop);
     // loop = loop && (await mDepositItems());
     // console.log("mDepositItems", loop);
-    loop = loop && (await mVoidDump());
+    loop = loop && g.mode === "farmMobs" && (await mVoidDump());
     console.log("mVoidDump", loop);
   }
 }
@@ -31,7 +31,11 @@ async function mwalkPoints() {
     bot.chat("Tell me where to stand.");
     return false;
   }
-  for (let point_index = 0; point_index < mwalk_points.length; point_index++) {
+  for (
+    let point_index = 0;
+    point_index < mwalk_points.length && g.mode === "farmMobs";
+    point_index++
+  ) {
     const point_name = mwalk_points[point_index];
     const point = g.named_points[point_name];
     await bot.pathfinder.goto(new GoalNear(point.x, point.y, point.z, 1));
@@ -50,7 +54,11 @@ async function fightPoints() {
     bot.chat("Tell me where to stand.");
     return false;
   }
-  for (let point_index = 0; point_index < farm_points.length; point_index++) {
+  for (
+    let point_index = 0;
+    point_index < farm_points.length && g.mode === "farmMobs";
+    point_index++
+  ) {
     const point_name = farm_points[point_index];
     const point = g.named_points[point_name];
     await bot.pathfinder.goto(new GoalNear(point.x, point.y, point.z, 1));
@@ -71,7 +79,7 @@ async function fightPoints() {
       }
     }
     let saw_mobs = true;
-    while (saw_mobs) {
+    while (saw_mobs && g.mode === "farmMobs") {
       saw_mobs = false;
       for (const entity_id in bot.entities) {
         const entity = bot.entities[entity_id];
@@ -95,7 +103,11 @@ async function fightPoints() {
         saw_mobs = true;
         break;
       }
-      if (["iron_sword", "wooden_sword"].indexOf(bot.heldItem && bot.heldItem.name) === -1) {
+      if (
+        ["iron_sword", "wooden_sword"].indexOf(
+          bot.heldItem && bot.heldItem.name,
+        ) === -1
+      ) {
         await sleep(300);
       } else {
         await sleep(1100);
