@@ -27,7 +27,7 @@ async function doTreeMining() {
 async function mineTree() {
   // Initial search for logs
   const bot = g.getBot();
-  const iron_axe_id = bot.registry.itemsByName.iron_axe.id;
+  const use_axe_id = bot.registry.itemsByName.diamond_axe.id;
   const ids = [bot.registry.blocksByName["oak_log"].id];
   const blocks = bot.findBlocks({
     matching: ids,
@@ -61,7 +61,7 @@ async function mineTree() {
   // console.log("floor_block", floor_block)
   if (floor_block.name == "oak_log") {
     // console.log("digging bottom")
-    await equip_by_id(iron_axe_id);
+    await equip_by_id(use_axe_id);
     await bot.dig(floor_block);
   }
   p.y = p.y + 1;
@@ -80,7 +80,7 @@ async function mineTree() {
   // let pb = bot.blockAt(p);
   // console.log("pb", pb, pb.type)
   while (bot.blockAt(p).name == "oak_log") {
-    await equip_by_id(iron_axe_id);
+    await equip_by_id(use_axe_id);
     await bot.dig(bot.blockAt(p));
     p.y = p.y + 1;
   }
