@@ -23,19 +23,19 @@
   "author": "eggonabull",
   "license": "MIT",
   "dependencies": {
-    "mineflayer": "^4.10.1",
+    "mineflayer": "^4.14.0",
     "mineflayer-auto-eat": "^3.3.6",
-    "mineflayer-pathfinder": "^2.4.4"
+    "mineflayer-pathfinder": "^2.4.4",
+    "prismarine-entity": "^2.2.0",
+    "prismarine-item": "^1.12.1",
+    "prismarine-viewer": "^1.25.0",
+    "vec3": "^0.1.8"
   },
   "devDependencies": {
     "eslint": "^8.47.0",
     "eslint-plugin-prettier": "^5.0.0",
     "prettier": "^3.0.2",
-    "typescript": "^5.2.2",
-    "prismarine-entity": "^2.2.0",
-		"prismarine-item": "^1.12.1",
-		"prismarine-viewer": "^1.25.0",
-		"vec3": "^0.1.8"
+    "typescript": "^5.2.2"
   },
   "bugs": {
     "url": "https://github.com/eggonabull/mine-bot/issues"

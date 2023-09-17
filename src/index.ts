@@ -336,13 +336,114 @@ function chat_handler(username: string, message: string) {
       return;
     }
     farmCrops(args[0]);
+  } else if (command === "bridge") {
+    if (!target) {
+      bot.chat("I don't see you!");
+      return;
+    }
+    const dist = (args[0] && parseInt(args[0])) || 50;
+    let origin = target.position.floored();
+    const direction = (target.pitch, target.yaw);
+
+    let normal;
+    if (
+      ((7 * Math.PI) / 4 <= target.yaw && target.yaw < 2 * Math.PI) ||
+      (0 <= target.yaw && target.yaw < Math.PI / 4)
+    ) {
+      console.log(" Negative z -- North");
+      normal = new Vec3(0, 0, -1);
+    } else if (Math.PI / 4 <= target.yaw && target.yaw < (3 * Math.PI) / 4) {
+      console.log(" Negative x -- West");
+      normal = new Vec3(-1, 0, 0);
+    } else if (
+      (3 * Math.PI) / 4 <= target.yaw &&
+      target.yaw < (5 * Math.PI) / 4
+    ) {
+      console.log(" Positive z -- South");
+      normal = new Vec3(0, 0, 1);
+    } else if (
+      (5 * Math.PI) / 4 <= target.yaw &&
+      target.yaw < (7 * Math.PI) / 4
+    ) {
+      console.log(" Positive x -- East");
+      normal = new Vec3(1, 0, 0);
+    } else {
+      console.log("yaw", target.yaw * (180 / Math.PI));
+    }
+
+    if (!normal) {
+      bot.chat("I don't know which way you're facing");
+      return;
+    }
+
+    bridge(origin, normal, dist);
   } else if (command === "swords") {
-    createSwords()
+    createSwords();
   } else if (command === "sleep") {
     goToBed(true);
   } else if (g.named_points[command]) {
     const p = g.named_points[command];
     bot.pathfinder.setGoal(new GoalNear(p.x, p.y, p.z, 1));
+  }
+}
+
+async function bridge(player_position: Vec3, normal: Vec3, dist: number) {
+  const origin = player_position;
+  let working_pos = origin.add(new Vec3(0, -1, 0));
+
+  while (bot.blockAt(working_pos).name != "air") {
+    console.log("new origin", origin);
+    working_pos = working_pos.add(normal);
+  }
+
+  while (working_pos.xzDistanceTo(origin) < dist) {
+    console.log("origin", origin);
+    // export interface GoalPlaceBlockOptions {
+    //   range: number;
+    //   LOS: boolean;
+    //   faces: Vec3[];
+    //   facing: 'north' | 'east' | 'south' | 'west' | 'up' | 'down';
+    // }
+    console.log("normal", normal);
+    console.log(normal.minus(normal).minus(normal));
+
+    //bot.pathfinder.goto(new GoalPlaceBlock(origin, bot.world, { range: 4, LOS: false, faces: [normal], facing: "east" }));
+    await bot.pathfinder.goto(
+      new GoalNear(working_pos.x, working_pos.y, working_pos.z, 4),
+    );
+    const invert_normal = normal.minus(normal).minus(normal);
+
+    // base
+    equip_by_name("oak_planks");
+    await bot.activateBlock(bot.blockAt(working_pos), invert_normal);
+    await bot.waitForTicks(2);
+    await bot.activateBlock(
+      bot.blockAt(working_pos.plus(new Vec3(normal.z, 0, -normal.x))),
+      invert_normal,
+    );
+    await bot.waitForTicks(2);
+    await bot.activateBlock(
+      bot.blockAt(working_pos.plus(new Vec3(-normal.z, 0, normal.x))),
+      invert_normal,
+    );
+    await bot.waitForTicks(2);
+
+    equip_by_name("oak_slab");
+    const slab_pos = working_pos.plus(new Vec3(0, 1, 0));
+    await bot.activateBlock(bot.blockAt(slab_pos), invert_normal);
+    await bot.waitForTicks(2);
+    await bot.activateBlock(
+      bot.blockAt(slab_pos.plus(new Vec3(normal.z, 0, -normal.x))),
+      invert_normal,
+    );
+    await bot.waitForTicks(2);
+    await bot.activateBlock(
+      bot.blockAt(slab_pos.plus(new Vec3(-normal.z, 0, normal.x))),
+      invert_normal,
+    );
+    await bot.waitForTicks(2);
+
+    working_pos = working_pos.plus(normal);
   }
 }
 
