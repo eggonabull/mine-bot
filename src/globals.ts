@@ -11,7 +11,7 @@ export let prevHealth: number | null = null;
 export let defaultMove: pathfinder_pkg.Movements | null = null;
 export let bot: mineflayer.Bot | null = null;
 
-const noFileError = "ENOENT: no such file or directory, open 'settings.json'"
+const noFileError = "ENOENT: no such file or directory, open 'settings.json'";
 
 export function load_settings() {
   try {
