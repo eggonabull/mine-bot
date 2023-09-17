@@ -28,7 +28,7 @@ export async function pickUpItems() {
     if (diff.ydiff < 1 && diff.posdiff < 25) {
       const epos = entity.position;
       await bot.pathfinder.goto(
-        new GoalNear(epos.x, bot.entity.position.y, epos.z, 1)
+        new GoalNear(epos.x, bot.entity.position.y, epos.z, 1),
       );
       await sleep(350);
     }
@@ -58,7 +58,7 @@ export function getDistances(vec: Vec3) {
   const ydiff = Math.abs(vec.y - bot.entity.position.y);
   const posdiff = Math.sqrt(
     Math.pow(vec.x - bot.entity.position.x, 2) +
-      Math.pow(vec.z - bot.entity.position.z, 2)
+      Math.pow(vec.z - bot.entity.position.z, 2),
   );
   return {
     ydiff: ydiff,
@@ -70,12 +70,13 @@ export async function drop(filter: string | null = null) {
   const bot = g.getBot();
   console.log("bot.inventory.items", bot.inventory.items());
   for (const item of bot.inventory.items()) {
-    console.log("dropping", item, item.type);
     if (filter) {
       if (item.name.indexOf(filter) >= 0) {
+        console.log("dropping", item, item.type);
         await bot.toss(item.type, null, item.count);
       }
     } else {
+      console.log("dropping", item, item.type);
       await bot.toss(item.type, null, item.count);
     }
   }
