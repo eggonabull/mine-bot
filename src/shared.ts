@@ -101,10 +101,20 @@ export function itemToString(item: primarine_item.Item | null) {
 
 export async function equip_by_id(item_id: number) {
   const bot = g.getBot();
-  const item = bot.inventory.findInventoryItem(item_id, null, false);
-  if (item) {
-    await bot.equip(item, "hand");
+  const items = bot.inventory
+    .items()
+    .filter((item) => item.type == item_id)
+    // Always use the most-damaged matching item first
+    // @ts-ignore
+    .sort(
+      (itemA, itemB) =>
+        // @ts-ignore
+        itemB.nbt?.value?.Damage?.value - itemA.nbt?.value?.Damage?.value,
+    );
+  if (items.length === 0) {
+    return;
   }
+  await bot.equip(items[0], "hand");
 }
 
 export async function equip_by_name(item_name: string) {
